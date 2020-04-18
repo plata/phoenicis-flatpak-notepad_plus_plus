@@ -1,0 +1,81 @@
+---
+app-id: org.phoenicis.notepad_plus_plus
+runtime: org.freedesktop.Platform
+runtime-version: '19.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk11
+add-extensions:
+  # support 32-bit apps
+  org.freedesktop.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: '19.08'
+
+  org.freedesktop.Platform.Compat.i386.Debug:
+    directory: lib/debug/lib/i386-linux-gnu
+    version: '19.08'
+    no-autodownload: true
+
+  org.freedesktop.Platform.GL32:
+    directory: lib/i386-linux-gnu/GL
+    version: '19.08'
+    subdirectories: true
+    no-autodownload: true
+    autodelete: false
+    add-ld-path: lib
+    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
+command: run-app
+finish-args:
+  # restrict filesystem access to .Phoenicis
+  # and the download and documents directories (for local installers)
+  - --persist=.Phoenicis
+  - --filesystem=xdg-download
+  - --filesystem=xdg-documents
+  # support 32-bit apps
+  - --allow=multiarch
+  - --share=ipc
+  - --socket=x11
+  - --socket=pulseaudio
+  - --share=network
+  - --device=all
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk11/install.sh
+  - name: cabextract
+    buildsystem: autotools
+    sources:
+      - type: archive
+        url: https://www.cabextract.org.uk/cabextract-1.6.tar.gz
+        sha256: cee661b56555350d26943c5e127fc75dd290b7f75689d5ebc1f04957c4af55fb
+  - name: playonlinux
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/lib/i386-linux-gnu
+      - install -Dm644 -t /app/etc phoenicis-flatpak/ld.so.conf
+      - install -Dm755 run-app /app/bin/run-app
+      - mkdir -p /app/phoenicis/lib
+      - cp -r phoenicis-flatpak/lib/* /app/phoenicis/lib
+      - chmod 755 -R /app/phoenicis
+      - install -Dm644 org.phoenicis.notepad_plus_plus.appdata.xml /app/share/appdata/org.phoenicis.notepad_plus_plus.appdata.xml
+      - install -Dm644 org.phoenicis.notepad_plus_plus.desktop /app/share/applications/org.phoenicis.notepad_plus_plus.desktop
+      - for icon_size in 16 22 24 32 48 64 256; do install -d /app/share/icons/hicolor/${icon_size}x${icon_size}/apps; install -m644 icons/notepad_plus_plus_${icon_size}.png /app/share/icons/hicolor/${icon_size}x${icon_size}/apps/org.phoenicis.notepad_plus_plus.png; done
+    sources:
+      - type: archive
+        path: phoenicis-flatpak.zip
+        dest: phoenicis-flatpak
+      - type: dir
+        path: icons
+        dest: icons
+      - type: file
+        path: org.phoenicis.notepad_plus_plus.appdata.xml
+        dest-filename: org.phoenicis.notepad_plus_plus.appdata.xml
+      - type: file
+        path: org.phoenicis.notepad_plus_plus.desktop
+        dest-filename: org.phoenicis.notepad_plus_plus.desktop
+      - type: file
+        path: run-app.sh
+        dest-filename: run-app

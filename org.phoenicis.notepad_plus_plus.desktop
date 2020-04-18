@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Notepad++ (Phoenicis)
+Comment=Free file editor
+Exec=run-app %U
+StartupNotify=true
+Terminal=false
+Type=Application
+MimeType=application/x-ms-dos-executable;application/x-msi;application/x-ms-shortcut;
+Icon=org.phoenicis.notepad_plus_plus
+Categories=Game;Utility
+Keywords=Phoenicis;PlayOnLinux;Wine;
+
