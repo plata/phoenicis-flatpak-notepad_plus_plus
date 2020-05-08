@@ -3,10 +3,8 @@ Proof of concept for Phoenicis app flatpaks
 
 ### Build
 ```
-git clone https://github.com/plata/phoenicis.git
-cd phoenicis
-git checkout flatpak-app-integration
-mvn package
+git clone https://github.com/PhoenicisOrg/phoenicis.git
+mvn package -DskipTests
 cd ..
 git clone https://github.com/plata/phoenicis-flatpak-notepad_plus_plus.git
 cp phoenicis/phoenicis-dist/target/phoenicis-flatpak.zip phoenicis-flatpak-notepad_plus_plus
@@ -16,7 +14,7 @@ flatpak-builder build-dir org.phoenicis.notepad_plus_plus.yml --force-clean --us
 
 ### Run
 ```
-flatpak run org.phoenicis.notepad_plus_plus run-app
+flatpak run org.phoenicis.notepad_plus_plus
 ```
 
 ### How it works
