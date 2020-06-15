@@ -79,3 +79,17 @@ modules:
       - type: file
         path: run-app.sh
         dest-filename: run-app
+  - name: scripts
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 repositories.json /app/phoenicis/repositories.json
+      - mkdir -p /app/phoenicis/scripts
+      - cp -r scripts/* /app/phoenicis/scripts
+    sources:
+      - type: archive
+        url: https://github.com/PhoenicisOrg/scripts/archive/master.zip
+        sha256: fe1cb0ecea05c454c8f0b84c9cd240e07dbf11b79ca21a7e0890c0784dff4f4c
+        dest: scripts
+      - type: file
+        path: repositories.json
+        dest-filename: repositories.json
